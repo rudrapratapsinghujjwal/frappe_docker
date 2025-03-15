@@ -25,7 +25,9 @@ USER frappe
 COPY start.sh /home/frappe/start.sh
 
 # Make script executable
+USER root  # Temporarily switch to root to set permissions
 RUN chmod +x /home/frappe/start.sh
+USER frappe  # Switch back to non-root user
 
 # Run script
 CMD ["/bin/bash", "/home/frappe/start.sh"]
