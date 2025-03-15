@@ -1,5 +1,9 @@
-FROM frappe/frappe-socketio:v14.0.0
 WORKDIR /home/frappe
-COPY start.sh /app/start.sh
+
+# Ensure the script is copied with correct permissions
+COPY --chown=root:root start.sh /app/start.sh
+
+# Grant execute permissions
 RUN chmod +x /app/start.sh
+
 CMD ["sh", "/app/start.sh"]
