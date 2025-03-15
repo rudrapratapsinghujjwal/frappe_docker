@@ -1,9 +1,10 @@
 WORKDIR /home/frappe
 
-# Ensure the script is copied with correct permissions
-COPY --chown=root:root start.sh /app/start.sh
+# Copy the script
+COPY start.sh /app/start.sh
 
-# Grant execute permissions
-RUN chmod +x /app/start.sh
+# Fix permission issues inside Docker
+RUN chmod 755 /app/start.sh && dos2unix /app/start.sh || true
 
+# Run the script
 CMD ["sh", "/app/start.sh"]
