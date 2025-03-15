@@ -1,8 +1,16 @@
 FROM ubuntu:22.04
 
-WORKDIR /home/frappe
+# Set environment variables
+ENV USER=frappe
+ENV HOME=/home/frappe
 
-# Install necessary dependencies
+# Create a non-root user
+RUN useradd -m -d $HOME -s /bin/bash $USER
+
+# Set working directory
+WORKDIR $HOME
+
+# Install dependencies
 RUN apt-get update && apt-get install -y python3-pip nodejs npm \
     redis-server mariadb-server curl \
     && apt-get clean
@@ -10,11 +18,14 @@ RUN apt-get update && apt-get install -y python3-pip nodejs npm \
 # Install Bench
 RUN pip install frappe-bench
 
+# Switch to non-root user
+USER frappe
+
 # Copy the script
-COPY start.sh /app/start.sh
+COPY start.sh /home/frappe/start.sh
 
-# Fix permissions and format
-RUN chmod +x /app/start.sh && dos2unix /app/start.sh || true
+# Make script executable
+RUN chmod +x /home/frappe/start.sh
 
-# Run the script
-CMD ["/bin/bash", "/app/start.sh"]
+# Run script
+CMD ["/bin/bash", "/home/frappe/start.sh"]
